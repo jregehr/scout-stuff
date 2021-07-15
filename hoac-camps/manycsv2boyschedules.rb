@@ -99,17 +99,17 @@ def parse_input_file(input_file, output_array, row, col)
 
   STDOUT.puts("DEBUG: #{input_file}")
   # STDOUT.puts("DEBUG: #{output_array}")
-  STDOUT.puts("DEBUG: #{row}, #{col}")
+  # STDOUT.puts("DEBUG: #{row}, #{col}")
 
   if input_table[1].join(",") != ',Day 2 - 07/17/2021,Day 4 - 07/19/2021,Day 5 - 07/20/2021,Day 6 - 07/21/2021,Day 7 - 07/22/2021,Day 8 - 07/23/2021'
     STDOUT.puts "Error in #{input_file}: Unknown schedule days: #{input_table[1].join(",")}"
     return
   end
 
-  name_blag = input_table[0][0].split(' ')
-  # kid_name = "\"#{name_blag[0]} #{name_blag[1][0,1]}\""
-  kid_name = "#{name_blag[0]} #{name_blag[1]}"
-  output_array[row][col] = kid_name
+  # name_blag = input_table[0][0].split(' ')
+  # kid_name = "#{name_blag[0]} #{name_blag[1]}"
+  # output_array[row][col] = kid_name
+  output_array[row][col] = input_table[0][0]
   row += 1
   
   time_slots = ["08:00 AM", "08:30 AM", "09:30 AM", "10:00 AM", "02:00 PM", "03:00 PM", "03:30 PM"]
