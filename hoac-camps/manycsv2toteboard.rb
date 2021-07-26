@@ -1,5 +1,13 @@
 #!/usr/bin/env ruby
 
+######################################################################################
+#  This script will read a directory full of CSV files and build a camper schedule   #
+# that can be printed as a large tote board for easy viewing in camp.                #
+#                                                                                    #
+# 2021 notes - the script has some issues and several campers from 2021 did not have #
+# a correct schedule. Evan H and Jack S are examples.                                #
+######################################################################################
+
 require 'date'
 require 'csv'
 
@@ -36,14 +44,14 @@ def parse_time_slot(time, time_slots) #_maybe_nils)
   if !has_nils(time_slots[1,3]) && de_nil(time_slots[1,3]).uniq.length() == 1
     slot += "#{time_slots[1]}#{print_time}"
   else
-    slot += three_slot_split(1, time_slots[1,3])
+    slot += three_slot_split(2, time_slots[1,3])
   end
 
   slot2 = ""
   if !has_nils(time_slots[4,3]) && de_nil(time_slots[4,3]).uniq.length() == 1
     slot2 = "#{time_slots[4]}#{print_time}"
   else
-    slot2 = three_slot_split(4, time_slots[4,3])
+    slot2 = three_slot_split(6, time_slots[4,3])
   end
 
   slot += " / #{slot2}" if !slot2.empty? 
@@ -74,7 +82,7 @@ def do_sames(slots)
 
   slot += slots[1]
   1.upto(5) do |i|
-    slot += ", #{slots[i]} (Day #{i})" if slots[i] != slots[1]
+    slot += ", #{slots[i]}-#{i}" if slots[i] != slots[1]
   end
 
   slot += "\""
@@ -83,11 +91,11 @@ end
 
 def three_slot_split(start_num, slots)
   result = ''
-  result += "#{slots[0]} (Day #{start_num})" if !slots[0].nil? && !slots[0].empty?
+  result += "#{slots[0]}-#{start_num}" if !slots[0].nil? && !slots[0].empty?
   result += ", " if !result.empty? && !slots[1].nil?
-  result += "#{slots[1]} (Day #{start_num+1})" if !slots[1].nil? && !slots[1].empty?
+  result += "#{slots[1]}-#{start_num+1}" if !slots[1].nil? && !slots[1].empty?
   result += ", " if !slots[1].nil? && !slots[1].empty?
-  result += "#{slots[2]} (Day #{start_num+2})" if !slots[2].nil? && !slots[2].empty?
+  result += "#{slots[2]}-#{start_num+2}" if !slots[2].nil? && !slots[2].empty?
 
   return result
 
@@ -104,6 +112,7 @@ def parse_intput_file(input_file, output_file)
   
   name_blag = input_table[0][0].split(' ')
   kid_name = "\"#{name_blag[0]} #{name_blag[1][0,1]}\""
+  sort = "\"#{name_blag[1][0,1]}_#{name_blag[0]}\""
   
   the_slot = 2
 
@@ -131,7 +140,7 @@ def parse_intput_file(input_file, output_file)
     session_4 = parse_time_slot("03:00 PM", input_table[the_slot])
   end
 
-  output_file.puts "#{kid_name},#{session_1},#{session_2},#{session_3},#{session_4}"
+  output_file.puts "#{kid_name},#{sort},#{session_1},#{session_2},#{session_3},#{session_4}"
 
 end
 
@@ -143,8 +152,8 @@ current_date = DateTime.now.strftime "%Y-%m-%d_%H-%M-%S"
 
 open("#{output_folder}/tote-board_#{current_date}.csv", 'w+') do |file|
 
-  file.puts ',"Day 1-3 / 4-6",,,,Notes/Rank Advancement'
-  file.puts 'Name,8:30,9:30,2:00,3:00,'
+  file.puts ',,"Day 2-5 / 6-8",,,,Notes /'
+  file.puts 'Name,SORT,8:30,9:30,2:00,3:00,Rank Advancement'
 
   Dir["#{input_folder}/*.csv"].each do |input_file|
 
