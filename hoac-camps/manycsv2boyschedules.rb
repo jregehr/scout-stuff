@@ -1,5 +1,20 @@
 #!/usr/bin/env ruby
 
+################################################################################################
+# This script will read a directory full of CSV files and build a single-file camper           #
+# schedule as a CSV that can be printed, cut and handed out individually to campers.           #
+# PRO TIP: Print the schedules on waterproof paper.                                            #
+#                                                                                              #
+# 2021 Notes:                                                                                  #
+# - the schedules worked well but could have been printed larger. Perhaps a bigger font.       #
+# - the formatting work in excel/numbers isn't too bad but would be much better if the program #
+#   wrote an excel file.                                                                       #
+#                                                                                              #
+# TODOs:                                                                                       #
+# - switch this from dropping a CSV to dropping a full XLS with formatting.                    #
+#                                                                                              #
+################################################################################################
+
 require 'date'
 require 'csv'
 
