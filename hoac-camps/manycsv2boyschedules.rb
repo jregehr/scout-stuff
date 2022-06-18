@@ -116,7 +116,7 @@ def parse_input_file(input_file, output_array, row, col)
   # STDOUT.puts("DEBUG: #{output_array}")
   # STDOUT.puts("DEBUG: #{row}, #{col}")
 
-  if input_table[1].join(",") != ',Day 2 - 07/17/2021,Day 4 - 07/19/2021,Day 5 - 07/20/2021,Day 6 - 07/21/2021,Day 7 - 07/22/2021,Day 8 - 07/23/2021'
+  if input_table[1].join(",") != ',Day 2 - 06/24/2022,Day 3 - 06/25/2022,Day 5 - 06/27/2022,Day 6 - 06/28/2022,Day 7 - 06/29/2022,Day 8 - 06/30/2022'
     STDOUT.puts "Error in #{input_file}: Unknown schedule days: #{input_table[1].join(",")}"
     return
   end
@@ -143,6 +143,8 @@ def parse_input_file(input_file, output_array, row, col)
 
   end
 
+  row += 1
+
   return row
 
 end
@@ -161,7 +163,7 @@ first_col = true
 length = Dir["#{input_folder}/*.csv"].length()
 STDOUT.puts "To process: #{length}"
 
-output_array = Array.new(((length+2)*8)/2){Array.new(4)}
+output_array = Array.new(((length+2)*9)/2){Array.new(5)}
 # output_array = Array.new(250){Array.new(4)}
 
 count = 0
@@ -173,7 +175,7 @@ Dir["#{input_folder}/*.csv"].each do |input_file|
   count += 1
   if first_col && count > length/2
     arow = 0
-    acol = 2
+    acol = 3
     first_col = false
   end
 
