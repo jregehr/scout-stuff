@@ -18,6 +18,10 @@
 require 'date'
 require 'csv'
 
+## Global variables - these may vary by year
+schedule_time_slots = ["08:00 AM", "08:30 AM", "09:30 AM", "10:00 AM", "02:00 PM", "03:00 PM", "03:30 PM"]
+schedule_days = ',Day 2 - 06/24/2022,Day 3 - 06/25/2022,Day 5 - 06/27/2022,Day 6 - 06/28/2022,Day 7 - 06/29/2022,Day 8 - 06/30/2022'
+
 def check_params()
   camper_sched_missing = ENV["CAMPER_SCHEDULES"].nil? || ENV["CAMPER_SCHEDULES"].empty?
   output_folder_missing = ENV["OUTPUT_FOLDER"].nil? || ENV["OUTPUT_FOLDER"].empty?
@@ -109,14 +113,14 @@ def find_time_slot(time_slot, input_table)
 
 end
 
-def parse_input_file(input_file, output_array, row, col)
+def parse_input_file(input_file, output_array, row, col, schedule_days, schedule_time_slots)
   input_table = CSV.read(input_file)
 
   STDOUT.puts("DEBUG: #{input_file}")
   # STDOUT.puts("DEBUG: #{output_array}")
   # STDOUT.puts("DEBUG: #{row}, #{col}")
 
-  if input_table[1].join(",") != ',Day 2 - 06/24/2022,Day 3 - 06/25/2022,Day 5 - 06/27/2022,Day 6 - 06/28/2022,Day 7 - 06/29/2022,Day 8 - 06/30/2022'
+  if input_table[1].join(",") != schedule_days
     STDOUT.puts "Error in #{input_file}: Unknown schedule days: #{input_table[1].join(",")}"
     return
   end
@@ -126,10 +130,8 @@ def parse_input_file(input_file, output_array, row, col)
   # output_array[row][col] = kid_name
   output_array[row][col] = input_table[0][0]
   row += 1
-  
-  time_slots = ["08:00 AM", "08:30 AM", "09:30 AM", "10:00 AM", "02:00 PM", "03:00 PM", "03:30 PM"]
 
-  time_slots.each do |slot|
+  schedule_time_slots.each do |slot|
     row_badges = ""
     slot_row = find_time_slot(slot, input_table[2,6])
 
@@ -171,7 +173,7 @@ count = 0
 Dir["#{input_folder}/*.csv"].each do |input_file|
 
   STDOUT.puts "File: #{File.basename(input_file)}"
-  arow = parse_input_file(input_file, output_array, arow, acol)
+  arow = parse_input_file(input_file, output_array, arow, acol, schedule_days, schedule_time_slots)
   count += 1
   if first_col && count > length/2
     arow = 0
