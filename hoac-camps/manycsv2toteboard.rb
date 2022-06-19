@@ -11,6 +11,9 @@
 require 'date'
 require 'csv'
 
+## Global variables - these may vary by year
+schedule_days = ',Day 2 - 06/24/2022,Day 3 - 06/25/2022,Day 5 - 06/27/2022,Day 6 - 06/28/2022,Day 7 - 06/29/2022,Day 8 - 06/30/2022'
+
 def check_params()
   camper_sched_missing = ENV["CAMPER_SCHEDULES"].nil? || ENV["CAMPER_SCHEDULES"].empty?
   output_folder_missing = ENV["OUTPUT_FOLDER"].nil? || ENV["OUTPUT_FOLDER"].empty?
@@ -102,10 +105,19 @@ def three_slot_split(start_num, slots)
   # return "FIXME: #{slots[0]} (Day #{start_num})"
 end
 
-def parse_intput_file(input_file, output_file)
+def parse_input_file(input_file, output_file, schedule_days)
   input_table = CSV.read(input_file)
+  input_table_len = input_table.length()
 
-  if input_table[1].join(",") != ',Day 2 - 07/17/2021,Day 4 - 07/19/2021,Day 5 - 07/20/2021,Day 6 - 07/21/2021,Day 7 - 07/22/2021,Day 8 - 07/23/2021'
+  STDOUT.puts "START input table: Length is #{input_table.length()}"
+  lineNo = 0
+  input_table.each do |table_line|
+    STDOUT.puts "Line #{lineNo}: #{table_line}" 
+    lineNo += 1
+  end
+  STDOUT.puts "END   input table"
+
+  if input_table[1].join(",") != schedule_days
     STDOUT.puts "Error in #{input_file}: Unknown schedule days: #{input_table[1].join(",")}"
     return
   end
@@ -121,23 +133,31 @@ def parse_intput_file(input_file, output_file)
   session_3 = ""
   session_4 = ""
 
-  if ["08:00 AM", "08:30 AM"].include? input_table[the_slot][0]
-    session_1 = parse_time_slot("08:30 AM", input_table[the_slot])
-    the_slot += 1
+  if input_table_len > the_slot
+    if ["08:00 AM", "08:30 AM"].include? input_table[the_slot][0]
+      session_1 = parse_time_slot("08:30 AM", input_table[the_slot])
+      the_slot += 1
+    end
   end
   
-  if ["09:30 AM", "10:00 AM"].include? input_table[the_slot][0]
-    session_2 = parse_time_slot("09:30 AM", input_table[the_slot])
-    the_slot += 1
+  if input_table_len > the_slot
+    if ["09:30 AM", "10:00 AM"].include? input_table[the_slot][0]
+      session_2 = parse_time_slot("09:30 AM", input_table[the_slot])
+      the_slot += 1
+    end
   end
 
-  if ["02:00 PM"].include? input_table[the_slot][0]
-    session_3 = parse_time_slot("02:00 PM", input_table[the_slot])
-    the_slot += 1
+  if input_table_len > the_slot
+    if ["02:00 PM"].include? input_table[the_slot][0]
+      session_3 = parse_time_slot("02:00 PM", input_table[the_slot])
+      the_slot += 1
+    end
   end
 
-  if ["03:00 PM", "03:30 PM"].include? input_table[the_slot][0]
-    session_4 = parse_time_slot("03:00 PM", input_table[the_slot])
+  if input_table_len > the_slot
+    if ["03:00 PM", "03:30 PM"].include? input_table[the_slot][0]
+      session_4 = parse_time_slot("03:00 PM", input_table[the_slot])
+    end
   end
 
   output_file.puts "#{kid_name},#{sort},#{session_1},#{session_2},#{session_3},#{session_4}"
@@ -158,7 +178,7 @@ open("#{output_folder}/tote-board_#{current_date}.csv", 'w+') do |file|
   Dir["#{input_folder}/*.csv"].each do |input_file|
 
     STDOUT.puts "File: #{File.basename(input_file)}"
-    parse_intput_file input_file, file
+    parse_input_file input_file, file, schedule_days
     
   
   end     # Dir[input_folder].each do |input_file|
