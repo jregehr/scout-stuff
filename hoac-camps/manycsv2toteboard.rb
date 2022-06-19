@@ -19,13 +19,14 @@ def check_params()
   output_folder_missing = ENV["OUTPUT_FOLDER"].nil? || ENV["OUTPUT_FOLDER"].empty?
   return if !camper_sched_missing && !output_folder_missing
 
+  bad_things = ''
   bad_things += "CAMPER_SCHEDULES" if camper_sched_missing
   bad_things += ", " if output_folder_missing && !camper_sched_missing
   bad_things += "OUTPUT_FOLDER" if output_folder_missing
   abort("Missing parameters: #{bad_things}")
 end
 
-def parse_time_slot(time, time_slots) #_maybe_nils)
+def parse_time_slot(time, time_slots, session_slot) #_maybe_nils)
 
   return "" if de_nil(time_slots).length() < 2
 
@@ -35,32 +36,26 @@ def parse_time_slot(time, time_slots) #_maybe_nils)
   print_time = " (#{time_slots[0][0,5].sub!(/^0?/, "")})" if !time_slots[0].empty? && time != time_slots[0]
 
   # Same badge all six days 
-  return "\"#{time_slots[1]}#{print_time}\"" if (!time_slots[1].nil? && time_slots[1].start_with?('Trail To First Class')) || (!has_nils(time_slots[1,6]) && de_nil(time_slots[1,6]).uniq.length() == 1)
+  return [ "#{time_slots[1]}#{print_time}" ] if (!time_slots[1].nil? && time_slots[1].start_with?('Trail To First Class')) || (!has_nils(time_slots[1,6]) && de_nil(time_slots[1,6]).uniq.length() == 1)
 
   if count_sames(time_slots) > 3
-    return do_sames(time_slots)
-
+    session_slot[0] = do_sames(time_slots)
+    return session_slot
   end
-
-  slot = "\""
 
   if !has_nils(time_slots[1,3]) && de_nil(time_slots[1,3]).uniq.length() == 1
-    slot += "#{time_slots[1]}#{print_time}"
+    session_slot[0] = "#{time_slots[1]}#{print_time}"
   else
-    slot += three_slot_split(2, time_slots[1,3])
+    session_slot[0] = three_slot_split(2, time_slots[1,3])
   end
 
-  slot2 = ""
   if !has_nils(time_slots[4,3]) && de_nil(time_slots[4,3]).uniq.length() == 1
-    slot2 = "#{time_slots[4]}#{print_time}"
+    session_slot[1] = "#{time_slots[4]}#{print_time}"
   else
-    slot2 = three_slot_split(6, time_slots[4,3])
+    session_slot[1] = three_slot_split(6, time_slots[4,3])
   end
 
-  slot += " / #{slot2}" if !slot2.empty? 
-
-  slot += "\""
-  return slot
+  return session_slot
 
 end
 
@@ -81,14 +76,13 @@ def count_sames(slots)
 end
 
 def do_sames(slots)
-  slot = "\""
+  slot = ''
 
   slot += slots[1]
   1.upto(5) do |i|
     slot += ", #{slots[i]}-#{i}" if slots[i] != slots[1]
   end
 
-  slot += "\""
   return slot
 end
 
@@ -102,7 +96,6 @@ def three_slot_split(start_num, slots)
 
   return result
 
-  # return "FIXME: #{slots[0]} (Day #{start_num})"
 end
 
 def parse_input_file(input_file, output_file, schedule_days)
@@ -128,33 +121,30 @@ def parse_input_file(input_file, output_file, schedule_days)
   
   the_slot = 2
 
-  session_1 = ""
-  session_2 = ""
-  session_3 = ""
-  session_4 = ""
+  session_1 = ['', '']
+  session_2 = ['', '']
+  session_3 = ['', '']
+  session_4 = ['', '']
 
   input_table[the_slot..-1].each do |input_table_slot|
     if ["08:00 AM", "08:30 AM"].include? input_table_slot[0]
-      session_1 += parse_time_slot("08:30 AM", input_table_slot)
-      # the_slot += 1
+      session_1 = parse_time_slot("08:30 AM", input_table_slot, session_1)
     end
   
     if ["09:30 AM", "10:00 AM"].include? input_table_slot[0]
-      session_2 += parse_time_slot("09:30 AM", input_table_slot)
-      # the_slot += 1
+      session_2 = parse_time_slot("09:30 AM", input_table_slot, session_2)
     end
 
     if ["02:00 PM"].include? input_table_slot[0]
-      session_3 += parse_time_slot("02:00 PM", input_table_slot)
-      # the_slot += 1
+      session_3 = parse_time_slot("02:00 PM", input_table_slot, session_3)
     end
 
     if ["03:00 PM", "03:30 PM"].include? input_table_slot[0]
-      session_4 += parse_time_slot("03:00 PM", input_table_slot)
+      session_4 = parse_time_slot("03:00 PM", input_table_slot, session_4)
     end
   end
 
-  output_file.puts "#{kid_name},#{sort},#{session_1},#{session_2},#{session_3},#{session_4}"
+  output_file.puts "#{kid_name},#{sort},\"#{session_1.join(" / ")}\",\"#{session_2.join(" / ")}\",\"#{session_3.join(" / ")}\",\"#{session_4.join(" / ")}\""
 
 end
 
