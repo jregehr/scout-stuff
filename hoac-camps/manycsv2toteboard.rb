@@ -102,13 +102,13 @@ def parse_input_file(input_file, output_file, schedule_days)
   input_table = CSV.read(input_file)
   input_table_len = input_table.length()
 
-  STDOUT.puts "START input table: Length is #{input_table.length()}"
-  lineNo = 0
-  input_table.each do |table_line|
-    STDOUT.puts "Line #{lineNo}: #{table_line}" 
-    lineNo += 1
-  end
-  STDOUT.puts "END   input table"
+  # STDOUT.puts "START input table: Length is #{input_table.length()}"
+  # lineNo = 0
+  # input_table.each do |table_line|
+  #   STDOUT.puts "Line #{lineNo}: #{table_line}" 
+  #   lineNo += 1
+  # end
+  # STDOUT.puts "END   input table"
 
   if input_table[1].join(",") != schedule_days
     STDOUT.puts "Error in #{input_file}: Unknown schedule days: #{input_table[1].join(",")}"
