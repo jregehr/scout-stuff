@@ -117,7 +117,7 @@ def parse_input_file(input_file, output_file, schedule_days)
   
   name_blag = input_table[0][0].split(' ')
   kid_name = "\"#{name_blag[0]} #{name_blag[1][0,1]}\""
-  sort = "\"#{name_blag[1][0,1]}_#{name_blag[0]}\""
+  sort = "\"#{name_blag[1]}_#{name_blag[0]}\""
   
   the_slot = 2
 
