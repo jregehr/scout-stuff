@@ -133,30 +133,24 @@ def parse_input_file(input_file, output_file, schedule_days)
   session_3 = ""
   session_4 = ""
 
-  if input_table_len > the_slot
-    if ["08:00 AM", "08:30 AM"].include? input_table[the_slot][0]
-      session_1 = parse_time_slot("08:30 AM", input_table[the_slot])
-      the_slot += 1
+  input_table[the_slot..-1].each do |input_table_slot|
+    if ["08:00 AM", "08:30 AM"].include? input_table_slot[0]
+      session_1 += parse_time_slot("08:30 AM", input_table_slot)
+      # the_slot += 1
     end
-  end
   
-  if input_table_len > the_slot
-    if ["09:30 AM", "10:00 AM"].include? input_table[the_slot][0]
-      session_2 = parse_time_slot("09:30 AM", input_table[the_slot])
-      the_slot += 1
+    if ["09:30 AM", "10:00 AM"].include? input_table_slot[0]
+      session_2 += parse_time_slot("09:30 AM", input_table_slot)
+      # the_slot += 1
     end
-  end
 
-  if input_table_len > the_slot
-    if ["02:00 PM"].include? input_table[the_slot][0]
-      session_3 = parse_time_slot("02:00 PM", input_table[the_slot])
-      the_slot += 1
+    if ["02:00 PM"].include? input_table_slot[0]
+      session_3 += parse_time_slot("02:00 PM", input_table_slot)
+      # the_slot += 1
     end
-  end
 
-  if input_table_len > the_slot
-    if ["03:00 PM", "03:30 PM"].include? input_table[the_slot][0]
-      session_4 = parse_time_slot("03:00 PM", input_table[the_slot])
+    if ["03:00 PM", "03:30 PM"].include? input_table_slot[0]
+      session_4 += parse_time_slot("03:00 PM", input_table_slot)
     end
   end
 
