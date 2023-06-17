@@ -20,7 +20,7 @@ require 'csv'
 
 ## Global variables - these may vary by year
 schedule_time_slots = ["08:00 AM", "08:30 AM", "09:30 AM", "10:00 AM", "02:00 PM", "03:00 PM", "03:30 PM"]
-schedule_days = ',Day 2 - 06/24/2022,Day 3 - 06/25/2022,Day 5 - 06/27/2022,Day 6 - 06/28/2022,Day 7 - 06/29/2022,Day 8 - 06/30/2022'
+schedule_days = ',Day 2 - 06/24/2023,Day 4 - 06/26/2023,Day 5 - 06/27/2023,Day 6 - 06/28/2023,Day 7 - 06/29/2023,Day 8 - 06/30/2023'
 
 def check_params()
   camper_sched_missing = ENV["CAMPER_SCHEDULES"].nil? || ENV["CAMPER_SCHEDULES"].empty?
@@ -116,7 +116,7 @@ end
 def parse_input_file(input_file, output_array, row, col, schedule_days, schedule_time_slots)
   input_table = CSV.read(input_file)
 
-  STDOUT.puts("DEBUG: #{input_file}")
+  # STDOUT.puts("DEBUG: #{input_file}")
   # STDOUT.puts("DEBUG: #{output_array}")
   # STDOUT.puts("DEBUG: #{row}, #{col}")
 

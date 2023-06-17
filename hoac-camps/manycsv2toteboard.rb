@@ -12,7 +12,8 @@ require 'date'
 require 'csv'
 
 ## Global variables - these may vary by year
-schedule_days = ',Day 2 - 06/24/2022,Day 3 - 06/25/2022,Day 5 - 06/27/2022,Day 6 - 06/28/2022,Day 7 - 06/29/2022,Day 8 - 06/30/2022'
+schedule_days = ',Day 2 - 06/24/2023,Day 4 - 06/26/2023,Day 5 - 06/27/2023,Day 6 - 06/28/2023,Day 7 - 06/29/2023,Day 8 - 06/30/2023'
+trail_to_first_class = 'Trail To First Class A1'
 
 def check_params()
   camper_sched_missing = ENV["CAMPER_SCHEDULES"].nil? || ENV["CAMPER_SCHEDULES"].empty?
@@ -98,7 +99,7 @@ def three_slot_split(start_num, slots)
 
 end
 
-def parse_input_file(input_file, output_file, schedule_days)
+def parse_input_file(input_file, output_file, schedule_days, trail_to_first_class)
   input_table = CSV.read(input_file)
   input_table_len = input_table.length()
 
@@ -126,27 +127,40 @@ def parse_input_file(input_file, output_file, schedule_days)
   session_3 = ['', '']
   session_4 = ['', '']
 
+  firstYear = false
+
   input_table[the_slot..-1].each do |input_table_slot|
     if ["08:00 AM", "08:30 AM"].include? input_table_slot[0]
       session_1 = parse_time_slot("08:30 AM", input_table_slot, session_1)
+      firstYear = firstYear || (session_1[0] == trail_to_first_class)
     end
   
     if ["09:30 AM", "10:00 AM"].include? input_table_slot[0]
       session_2 = parse_time_slot("09:30 AM", input_table_slot, session_2)
+      firstYear = firstYear || (session_2[0] == trail_to_first_class)
     end
 
     if ["02:00 PM"].include? input_table_slot[0]
       session_3 = parse_time_slot("02:00 PM", input_table_slot, session_3)
+      firstYear = firstYear || (session_3[0] == trail_to_first_class)
     end
 
     if ["03:00 PM", "03:30 PM"].include? input_table_slot[0]
       session_4 = parse_time_slot("03:00 PM", input_table_slot, session_4)
+      firstYear = firstYear || (session_4[0] == trail_to_first_class)
     end
   end
 
-  output_file.puts "#{kid_name},#{sort},\"#{session_1.join(" / ")}\",\"#{session_2.join(" / ")}\",\"#{session_3.join(" / ")}\",\"#{session_4.join(" / ")}\""
+  if firstYear
+    sort = sort[0] + "1_" + sort[1..]
+  end
+
+  if session_1.join("") != "" || session_2.join("") != "" || session_3.join("") != "" || session_4.join("") != ""
+    output_file.puts "#{kid_name},#{sort},\"#{session_1.join(" / ")}\",\"#{session_2.join(" / ")}\",\"#{session_3.join(" / ")}\",\"#{session_4.join(" / ")}\""
+  end
 
 end
+
 
 check_params
 
@@ -162,7 +176,7 @@ open("#{output_folder}/tote-board_#{current_date}.csv", 'w+') do |file|
   Dir["#{input_folder}/*.csv"].each do |input_file|
 
     STDOUT.puts "File: #{File.basename(input_file)}"
-    parse_input_file input_file, file, schedule_days
+    parse_input_file input_file, file, schedule_days, trail_to_first_class
     
   
   end     # Dir[input_folder].each do |input_file|
