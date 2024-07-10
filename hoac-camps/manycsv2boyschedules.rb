@@ -17,23 +17,50 @@
 
 require 'date'
 require 'csv'
+require 'json'
 
 ## Global variables - these may vary by year
 schedule_time_slots = ["08:00 AM", "08:30 AM", "09:30 AM", "10:00 AM", "02:00 PM", "03:00 PM", "03:30 PM"]
-schedule_days = ',Day 2 - 06/24/2023,Day 4 - 06/26/2023,Day 5 - 06/27/2023,Day 6 - 06/28/2023,Day 7 - 06/29/2023,Day 8 - 06/30/2023'
+schedule_days = ',Day 2 - 06/25/2024,Day 3 - 06/26/2024,Day 4 - 06/27/2024,Day 5 - 06/28/2024,Day 6 - 06/29/2024,Day 8 - 07/01/2024'
+# abort("Look at the leaders' guide and figure out the right days for merit badges\nAKA where does family day fall?")
 
-def check_params()
+class_locations_file = "Class-Locations-"
+class_locations_file += DateTime.now.strftime "%Y" 
+class_locations_file += ".json"
+
+def check_params(class_locations_file)
+  STDOUT.puts("class locations file: #{class_locations_file}")
   camper_sched_missing = ENV["CAMPER_SCHEDULES"].nil? || ENV["CAMPER_SCHEDULES"].empty?
   output_folder_missing = ENV["OUTPUT_FOLDER"].nil? || ENV["OUTPUT_FOLDER"].empty?
-  return if !camper_sched_missing && !output_folder_missing
+  class_locations_file_missing = check_class_locations_file class_locations_file
+  return if !camper_sched_missing && !output_folder_missing && !class_locations_file_missing
 
+  bad_things = ""
   bad_things += "CAMPER_SCHEDULES" if camper_sched_missing
   bad_things += ", " if output_folder_missing && !camper_sched_missing
   bad_things += "OUTPUT_FOLDER" if output_folder_missing
+  bad_things += ", " if output_folder_missing || camper_sched_missing
+  bad_things += "CAMPER_SCHEDULES folder must contiain " if class_locations_file_missing
+  bad_things += class_locations_file if class_locations_file_missing
   abort("Missing parameters: #{bad_things}")
 end
 
+def check_class_locations_file(class_locations_file)
+  class_file = ENV["CAMPER_SCHEDULES"]
+  class_file += "/../"
+  class_file += class_locations_file
+  return ! File.exists?(class_file)
+end
+
+# TODO Add locations to the badge listing. Use the Class Locations file.
+# - checking is already done above, but the file location is funkeh.
+# - file should be moved outside a specific inputs folder. Maybe at the level above the inputs folders.
+
 def parse_time_slot(time_slots)
+
+  # TODO make sure the dates are right here.
+  first_session_day=2
+  second_session_day=5
 
   return "" if de_nil(time_slots).length() < 2
 
@@ -48,14 +75,14 @@ def parse_time_slot(time_slots)
   slot = ""
 
   if !has_nils(time_slots[1,3]) && de_nil(time_slots[1,3]).uniq.length() == 1
-    slot += "#{time_slots[1]}-2"
+    slot += "#{time_slots[1]}-#{first_session_day}"
   else
     slot += three_slot_split(2, time_slots[1,3])
   end
 
   slot2 = ""
   if !has_nils(time_slots[4,3]) && de_nil(time_slots[4,3]).uniq.length() == 1
-    slot2 = "#{time_slots[4]}-6"
+    slot2 = "#{time_slots[4]}-#{second_session_day}"
   else
     slot2 = three_slot_split(6, time_slots[4,3])
   end
@@ -151,7 +178,7 @@ def parse_input_file(input_file, output_array, row, col, schedule_days, schedule
 
 end
 
-check_params
+check_params class_locations_file
 
 input_folder = ENV["CAMPER_SCHEDULES"]
 output_folder = ENV["OUTPUT_FOLDER"]
