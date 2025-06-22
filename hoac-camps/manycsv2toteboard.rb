@@ -13,7 +13,8 @@ require 'csv'
 require 'json'
 
 ## Global variables - these may vary by year
-schedule_days = ',Day 2 - 06/25/2024,Day 3 - 06/26/2024,Day 4 - 06/27/2024,Day 5 - 06/28/2024,Day 6 - 06/29/2024,Day 8 - 07/01/2024'
+schedule_days = ',Day 2 - 06/24/2025,Day 3 - 06/25/2025,Day 4 - 06/26/2025,Day 5 - 06/27/2025,Day 6 - 06/28/2025,Day 8 - 06/30/2025'
+
 trail_to_first_class = 'Trail To First Class A1'
 
 class_costs_file = "Class-Costs-"
@@ -21,14 +22,17 @@ class_costs_file += DateTime.now.strftime "%Y"
 class_costs_file += ".json"
 
 def check_params(class_costs_file)
+  class_costs_file_missing = true
   camper_sched_missing = ENV["CAMPER_SCHEDULES"].nil? || ENV["CAMPER_SCHEDULES"].empty?
   output_folder_missing = ENV["OUTPUT_FOLDER"].nil? || ENV["OUTPUT_FOLDER"].empty?
-  class_costs_file_missing = check_class_costs_file class_costs_file
+  if !camper_sched_missing
+    class_costs_file_missing = check_class_costs_file class_costs_file
+  end
   return if !camper_sched_missing && !output_folder_missing && !class_costs_file_missing
 
   bad_things = ''
   bad_things += "CAMPER_SCHEDULES" if camper_sched_missing
-  bad_things += ", " if output_folder_missing && !camper_sched_missing
+  bad_things += ", " if output_folder_missing && camper_sched_missing
   bad_things += "OUTPUT_FOLDER" if output_folder_missing
   bad_things += ", " if (output_folder_missing || camper_sched_missing) && class_costs_file_missing
   bad_things += "CAMPER_SCHEDULES folder must contiain " if class_costs_file_missing
@@ -45,6 +49,11 @@ end
 
 
 def parse_time_slot(time, time_slots, session_slot) #_maybe_nils)
+
+  # TODO make sure the days are right here.
+  first_session_day=2
+  second_session_day=5
+
   # STDOUT.puts("=================")
   # STDOUT.puts("time:#{time}")
   # STDOUT.puts("time:#{time_slots}")
@@ -80,7 +89,7 @@ def parse_time_slot(time, time_slots, session_slot) #_maybe_nils)
     if !has_nils(time_slots[4,3]) && de_nil(time_slots[4,3]).uniq.length() == 1
       session_slot[1] = "#{time_slots[4]}#{print_time}"
     else
-      session_slot[1] = three_slot_split(6, time_slots[4,3])
+      session_slot[1] = three_slot_split(second_session_day, time_slots[4,3])
     end
   end
 
@@ -229,7 +238,7 @@ current_date = DateTime.now.strftime "%Y-%m-%d_%H-%M-%S"
 class_costs_file_data = File.read(class_costs_file)
 class_costs = JSON.parse(class_costs_file_data)
 
-abort("Look at the leaders' guide and figure out the right days for merit badges\nAKA where does family day fall?")
+# abort("Look at the leaders' guide and figure out the right days for merit badges\nAKA where does family day fall?")
 open("#{output_folder}/tote-board_#{current_date}.csv", 'w+') do |file|
 
   # TODO make sure the dates are right here.

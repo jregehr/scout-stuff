@@ -5,7 +5,9 @@ if [ "${1}" == "" ]; then
   exit 1
 fi
 
-fileExtension="-$(date +%Y-%m-%d)_$1.xlsx"
+printf -v seq "%03d" ${1}
+
+fileExtension="-$(date +%Y-%m-%d)_${seq}.xlsx"
 echo "fe=${fileExtension}"
 
 
@@ -16,5 +18,5 @@ if [ -f ~/Downloads/UnitProgressCamper.xlsx ]; then
   mv ~/Downloads/UnitProgressCamper.xlsx ./UnitProgressCamper${fileExtension}
 fi
 if [ -f ~/Downloads/UnitProgressBadge.xlsx ]; then
-  mv ~/Downloads/UnitProgressBadge.xlsx UnitProgressBadge${fileExtension}
+  mv ~/Downloads/UnitProgressBadge.xlsx ./UnitProgressBadge${fileExtension}
 fi
