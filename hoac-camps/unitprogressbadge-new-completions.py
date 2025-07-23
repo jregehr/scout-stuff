@@ -20,7 +20,10 @@ class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
+    OKRED = '\033[91m'
     OKGREEN = '\033[92m'
+    BACKGROUND_YELLOW = '\033[43m'
+    BACKGROUND_WHITE = '\033[47m'
     WARNING = '\033[93m'
     FAIL = '\033[91m'
     ENDC = '\033[0m'
@@ -34,7 +37,7 @@ def dumpRow(r: tuple, yesOnly: bool) -> str:
   for v in r:
     if v.value == "Yes":
       hld = retty[0]
-      retty[0] = f"{bcolors.OKCYAN}{bcolors.BOLD}{hld}"
+      retty[0] = f"{bcolors.OKCYAN}{bcolors.BOLD}{hld}{bcolors.OKRED}{bcolors.BACKGROUND_WHITE}"
       retty.append(f"Yes{bcolors.ENDC}")
     else:
       retty.append(v.value)
@@ -45,7 +48,8 @@ def printTuple(badge: str, r1: tuple, r2: tuple, yesOnly: bool):
   arr1 = []
   arr2 = []
   print(f"{badge}")
-  print(f"  {dumpRow(r1, yesOnly)}")
+  if not yesOnly:
+    print(f"  {dumpRow(r1, yesOnly)}")
   print(f"  {dumpRow(r2, yesOnly)}")
 
 wb1 = load_workbook(filename = file1)
@@ -59,10 +63,16 @@ for ws1 in wb1.worksheets:
 
   # print(f"=== {ws1.title} ================================================================")
 
-  ws2 = wb2[ws1.title]
+  if ws1.title in wb2:
+    ws2 = wb2[ws1.title]
+  else:
+    ws2 = None
+
   # print(f"found: {ws2.title}")
   if ws2 == None:
-    sys.exit(1, f"Could not find {ws1.title} in book 2")
+    # sys.exit(1, f"Could not find {ws1.title} in book 2")
+    print(f"Could not find {ws1.title} in book 2")
+    continue
 
   for r1,r2 in zip(ws1,ws2):
     i = 0
