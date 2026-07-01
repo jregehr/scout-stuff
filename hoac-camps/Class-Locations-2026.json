@@ -3,19 +3,19 @@
     "Climbing"
   ],
   "Ecology/Conservation": [
-    "Astronomy (STEM)",
-    "Bird Study(STEM)",
-    "Environmental Science (STEM)",
-    "Forestry (STEM)",
-    "Geology (STEM)",
+    "Astronomy",
+    "Bird Study",
+    "Environmental Science",
+    "Forestry",
+    "Geology",
     "Insect Study",
-    "Mammal Study (STEM)",
-    "Nature (STEM)",
+    "Mammal Study",
+    "Nature",
     "Plant Science",
-    "Reptile & Amphibian Study (STEM)",
+    "Reptile & Amphibian Study",
     "Soil and Water Conservation",
-    "Space Exploration (STEM)",
-    "Weather (STEM)"
+    "Space Exploration",
+    "Weather"
   ],
   "Handicraft": [
     "Art & Leatherwork",
@@ -27,22 +27,22 @@
   ],
   "Lakefront": [
     "Advanced Sailing (Activity)",
-    "Canoeing (STEM)",
+    "Canoeing",
     "Kayaking",
-    "Motor Boating (STEM)",
-    "Paddle Craft Safety (Activity)",
+    "Motor Boating",
+    "Paddle Craft Safety",
     "Rowing",
-    "Small Boat Sailing (STEM)",
+    "Small Boat Sailing",
     "Water Sports"
   ],
   "Mic-O-Say Lodge": [
-    "Indian Lore"
+    "American Indian Culture"
   ],
   "Pool": [
     "Instructional Swim (Activity)",
     "Lifesaving",
-    "Snorkeling BSA",
-    "Mile Swim",
+    "Snorkeling BSA (Activity)",
+    "Mile Swim (activity patch)",
     "Safe Swim Defense",
     "Safety Afloat",
     "Swim and Water Rescue",
@@ -59,13 +59,13 @@
     "Wilderness Survival"
   ],
   "Archery Range": [
-    "Archery (STEM)"
+    "Archery"
   ],
   "Rifle Range": [
     "Rifle Shooting"
   ],
   "Briley Creek": [
-    "Long Range .22",
-    "Shotgun Shooting"
+    "Long Range .22 (STEM)",
+    "Shotgun Shooting (STEM)"
   ]
 }

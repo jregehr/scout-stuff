@@ -21,10 +21,7 @@ require 'json'
 
 ## Global variables - these may vary by year
 schedule_time_slots = ["08:00 AM", "08:30 AM", "09:30 AM", "10:00 AM", "02:00 PM", "03:00 PM", "03:30 PM"]
-schedule_days = ',Day 2 - 06/24/2025,Day 3 - 06/25/2025,Day 4 - 06/26/2025,Day 5 - 06/27/2025,Day 6 - 06/28/2025,Day 8 - 06/30/2025'
-
-
-# abort("Look at the leaders' guide and figure out the right days for merit badges\nAKA where does family day fall?")
+schedule_days = ',Day 2 - 06/24/2026,Day 3 - 06/25/2026,Day 4 - 06/26/2026,Day 5 - 06/27/2026,Day 7 - 06/29/2026,Day 8 - 06/30/2026'
 
 class_locations_file = "Class-Locations-"
 class_locations_file += DateTime.now.strftime "%Y" 
@@ -172,7 +169,9 @@ def parse_input_file(input_file, output_array, row, col, schedule_days, schedule
   # STDOUT.puts("DEBUG: #{row}, #{col}")
 
   if input_table[1].join(",") != schedule_days
-    STDOUT.puts "Error in #{input_file}: Unknown schedule days: #{input_table[1].join(",")}"
+    STDOUT.puts "Error in #{input_file}: Unknown schedule days:"
+    STDOUT.puts "   FILE: #{input_table[1].join(",")}"
+    STDOUT.puts "   OURS:#{schedule_days}"
     return
   end
 

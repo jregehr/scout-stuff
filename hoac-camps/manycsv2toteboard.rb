@@ -13,7 +13,7 @@ require 'csv'
 require 'json'
 
 ## Global variables - these may vary by year
-schedule_days = ',Day 2 - 06/24/2025,Day 3 - 06/25/2025,Day 4 - 06/26/2025,Day 5 - 06/27/2025,Day 6 - 06/28/2025,Day 8 - 06/30/2025'
+schedule_days = ',Day 2 - 06/24/2026,Day 3 - 06/25/2026,Day 4 - 06/26/2026,Day 5 - 06/27/2026,Day 7 - 06/29/2026,Day 8 - 06/30/2026'
 
 trail_to_first_class = 'Trail To First Class A1'
 
@@ -177,8 +177,10 @@ def parse_input_file(input_file, output_file, schedule_days, trail_to_first_clas
   # end
   # STDOUT.puts "END   input table"
 
-  if input_table[1].join(",") != schedule_days
-    STDOUT.puts "Error in #{input_file}: Unknown schedule days: #{input_table[1].join(",")}"
+  if input_table[1].join(",").strip() != schedule_days
+    STDOUT.puts "Error in #{input_file}: Unknown schedule days:"
+    STDOUT.puts "   FILE: #{input_table[1].join(",").strip()}"
+    STDOUT.puts "   OURS:#{schedule_days}"
     return
   end
   

@@ -1,6 +1,6 @@
 {
   "Archery": 3,
-  "Art/Leatherwork": 5,
+  "Art/Leatherwork": 10,
   "Basketry": 15,
   "Long Range .22": 20,
   "Metalwork": 10,
@@ -10,5 +10,5 @@
   "Shotgun Shooting": 25,
   "Space Exploration": 15,
   "Water Sports": 20,
-  "Wood Carving": 3
+  "Wood Carving": 6
 }
